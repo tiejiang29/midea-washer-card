@@ -10,6 +10,63 @@
 
 import { LitElement, html, css, svg } from 'lit';
 
+// ─── 洗涤模式英文→中文映射 ────────────────────────────────────
+const MODE_NAME_ZH = {
+  // 常见模式
+  'standard': '标准', 'normal': '标准', 'daily': '日常',
+  'quick': '快洗', 'fast': '快洗', 'speed': '快洗',
+  'heavy': '强力', 'intensive': '强力', 'strong': '强力',
+  'gentle': '轻柔', 'soft': '轻柔', 'delicate': '轻柔',
+  'spin': '脱水', 'spin_only': '单脱水',
+  'rinse': '漂洗', 'rinse_only': '单漂洗', 'rinse_spin': '漂脱',
+  'wash': '洗涤', 'wash_only': '单洗涤',
+  'baby': '婴儿洗', 'baby_care': '婴童洗',
+  'wool': '羊毛', 'wool_care': '羊毛护理',
+  'sport': '运动', 'sports': '运动', 'sportswear': '运动服',
+  'air_dry': '风干', 'airdry': '风干', 'dry': '烘干',
+  'soak': '浸泡', 'prewash': '预洗',
+  'memory': '记忆', 'memory_wash': '记忆洗',
+  'tub_clean': '桶自洁', 'self_clean': '自清洁', 'tubclean': '桶自洁',
+  'eco': '节能', 'eco_wash': '节能洗',
+  'deep_wash': '深度洗', 'deep': '深度洗',
+  'mixed': '混洗', 'mixed_wash': '混合洗',
+  'jeans': '牛仔', 'denim': '牛仔',
+  'down': '羽绒', 'down_jacket': '羽绒服',
+  'shirt': '衬衫', 'shirts': '衬衫',
+  'underwear': '内衣', 'intimates': '内衣',
+  'color_protect': '护色', 'color_care': '护色洗',
+  'antibacterial': '除菌', 'anti_bacterial': '除菌', 'sterilize': '除菌',
+  'allergy': '抗过敏', 'allergy_care': '过敏护理',
+  'night': '夜间', 'night_wash': '夜间洗', 'quiet': '静音', 'silent': '静音洗',
+  'refresh': '翻新', 'fresh': '焕新',
+  'smart': '智能', 'smart_wash': '智能洗',
+  'delay': '预约', 'timer': '预约',
+  'single': '单洗涤',
+  'cold': '冷水洗', 'cold_wash': '冷水洗',
+  'hot': '热水洗', 'hot_wash': '热水洗',
+  'drum_clean': '桶自洁', 'drum_cleaning': '桶清洁',
+  'quick_15': '快洗15分', 'quick_30': '快洗30分', 'quick_45': '快洗45分',
+  'super_quick': '超快洗', 'ultra_quick': '极速洗',
+  'intensive_stain': '顽渍洗', 'stain': '去渍', 'stain_wash': '去渍洗',
+  'pet_hair': '宠物毛发', 'pet': '宠物洗',
+  'steam': '蒸汽洗', 'steam_wash': '蒸汽洗',
+  'turbo': '涡轮洗', 'turbo_wash': '极速洗',
+};
+
+function translateModeName(enName) {
+  if (!enName || enName === '--') return enName;
+  // 先精确匹配小写
+  const lower = enName.toLowerCase().replace(/\s+/g, '_');
+  if (MODE_NAME_ZH[lower]) return MODE_NAME_ZH[lower];
+  // 再尝试去掉下划线匹配
+  const noSep = lower.replace(/[_\-]/g, '');
+  for (const [key, val] of Object.entries(MODE_NAME_ZH)) {
+    if (key.replace(/[_\-]/g, '') === noSep) return val;
+  }
+  // 未找到映射则返回原文
+  return enName;
+}
+
 // ─── 洗涤阶段定义 ────────────────────────────────────────────
 const WASH_PHASES = [
   { key: 'standby', name: '待机', icon: 'mdi:power-standby', color: '#546e7a' },
@@ -676,6 +733,16 @@ class MideaWasherCard extends LitElement {
     // 优先从 program select 实体的 state 读取当前模式
     const modeState = this.hass?.states[this._modeEntity];
     if (modeState && modeState.state && modeState.state !== 'unknown' && modeState.state !== 'unavailable') {
+      return translateModeName(modeState.state);
+    }
+    const raw = this._attrs[this.config.attr_wash_mode] || this._attrs['mode'] || '--';
+    return translateModeName(raw);
+  }
+
+  get _washModeRaw() {
+    // 获取原始英文模式名（用于比对）
+    const modeState = this.hass?.states[this._modeEntity];
+    if (modeState && modeState.state && modeState.state !== 'unknown' && modeState.state !== 'unavailable') {
       return modeState.state;
     }
     return this._attrs[this.config.attr_wash_mode] || this._attrs['mode'] || '--';
@@ -920,9 +987,9 @@ class MideaWasherCard extends LitElement {
             </div>
             <div class="mode-options ${this._showModeSelector ? 'open' : ''}">
               ${modeOptions.map(opt => html`
-                <div class="mode-option ${opt === currentMode ? 'selected' : ''}"
+                <div class="mode-option ${opt === this._washModeRaw ? 'selected' : ''}"
                   @click=${() => this._selectMode(opt)}>
-                  ${opt}
+                  ${translateModeName(opt)}
                 </div>
               `)}
             </div>
