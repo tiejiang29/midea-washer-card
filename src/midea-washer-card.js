@@ -1083,5 +1083,5 @@ window.customCards.push({
   type: 'midea-washer-card',
   name: 'Midea Washer Card',
   description: '美的洗衣机状态卡片 (midea_auto_cloud)',
-  documentationURL: 'https://github.com/user/midea-washer-card',
+  documentationURL: 'https://github.com/tiejiang29/midea-washer-card',
 });
