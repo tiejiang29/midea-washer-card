@@ -644,4 +644,4 @@ const x=globalThis,w=t=>t,A=x.trustedTypes,E=A?A.createPolicy("lit-html",{create
             @input=${this._valueChanged} placeholder="美的洗衣机">
         </div>
       </div>
-    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"midea-washer-card",name:"Midea Washer Card",description:"美的洗衣机状态卡片 (midea_auto_cloud)",documentationURL:"https://github.com/tiejiang29/midea-washer-card"});
+    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"midea-washer-card",name:"Midea Washer Card",description:"美的洗衣机状态卡片 — 适配 midea_auto_cloud 集成",documentationURL:"https://github.com/tiejiang29/midea-washer-card"});
