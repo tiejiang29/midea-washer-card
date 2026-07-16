@@ -620,8 +620,8 @@ class MideaWasherCard extends LitElement {
     if (suffix === 'start_pause') {
       candidates.push(`${prefix}_start_pause`, `${prefix}_start`, `switch.${prefix}_start_pause`, `switch.${prefix}_start`);
     }
-    if (suffix === 'wash_mode' || suffix === 'mode' || suffix === 'program') {
-      candidates.push(`${prefix}_wash_mode`, `${prefix}_mode`, `${prefix}_program`, `select.${prefix}_wash_mode`, `select.${prefix}_mode`, `select.${prefix}_program`);
+    if (suffix === 'program' || suffix === 'wash_mode' || suffix === 'mode') {
+      candidates.push(`${prefix}_program`, `select.${prefix}_program`, `${prefix}_wash_mode`, `select.${prefix}_wash_mode`, `${prefix}_mode`, `select.${prefix}_mode`);
     }
     if (suffix === 'door_status') {
       candidates.push(`${prefix}_door_status`, `${prefix}_door`, `binary_sensor.${prefix}_door_status`, `binary_sensor.${prefix}_door`);
@@ -636,7 +636,7 @@ class MideaWasherCard extends LitElement {
     // 全局搜索时用的后缀模式
     if (suffix === 'power') return ['power'];
     if (suffix === 'start_pause') return ['start_pause', 'start'];
-    if (suffix === 'wash_mode' || suffix === 'mode' || suffix === 'program') return ['wash_mode', 'mode', 'program'];
+    if (suffix === 'program' || suffix === 'wash_mode' || suffix === 'mode') return ['program', 'wash_mode', 'mode'];
     if (suffix === 'door_status') return ['door_status', 'door'];
     if (suffix === 'bucket_water_overheating' || suffix === 'water_overheating') return ['bucket_water_overheating', 'water_overheating'];
     return [suffix];
@@ -651,7 +651,7 @@ class MideaWasherCard extends LitElement {
   }
 
   get _modeEntity() {
-    return this._findEntity('wash_mode') || this._findEntity('mode') || this._findEntity('program');
+    return this._findEntity('program') || this._findEntity('wash_mode') || this._findEntity('mode');
   }
 
   get _doorEntity() {
@@ -673,6 +673,11 @@ class MideaWasherCard extends LitElement {
   }
 
   get _washMode() {
+    // 优先从 program select 实体的 state 读取当前模式
+    const modeState = this.hass?.states[this._modeEntity];
+    if (modeState && modeState.state && modeState.state !== 'unknown' && modeState.state !== 'unavailable') {
+      return modeState.state;
+    }
     return this._attrs[this.config.attr_wash_mode] || this._attrs['mode'] || '--';
   }
 
@@ -1049,7 +1054,7 @@ class MideaWasherCardEditor extends LitElement {
         <div class="field">
           <label>模式选择实体 (可选)</label>
           <input type="text" .value=${this.config.mode_entity || ''} configValue="mode_entity"
-            @input=${this._valueChanged} placeholder="select.xxxx_wash_mode">
+            @input=${this._valueChanged} placeholder="select.xxxx_program">
         </div>
         <div class="field">
           <label>门状态实体 (可选，留空自动探测)</label>
