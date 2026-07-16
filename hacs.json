@@ -1,7 +1,7 @@
 {
   "name": "Midea Washer Card",
-  "content_in_root": false,
+  "content_in_root": true,
   "render_readme": true,
-  "filename": "dist/midea-washer-card.js",
+  "filename": "midea-washer-card.js",
   "country": ["CN"]
 }
