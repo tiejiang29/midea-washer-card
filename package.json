@@ -1,6 +1,6 @@
 {
   "name": "midea-washer-card",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Home Assistant custom card for Midea washing machine (midea_auto_cloud integration)",
   "main": "dist/midea-washer-card.js",
   "scripts": {
