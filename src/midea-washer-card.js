@@ -620,8 +620,8 @@ class MideaWasherCard extends LitElement {
     if (suffix === 'start_pause') {
       candidates.push(`${prefix}_start_pause`, `${prefix}_start`, `switch.${prefix}_start_pause`, `switch.${prefix}_start`);
     }
-    if (suffix === 'wash_mode' || suffix === 'mode') {
-      candidates.push(`${prefix}_wash_mode`, `${prefix}_mode`, `select.${prefix}_wash_mode`, `select.${prefix}_mode`);
+    if (suffix === 'wash_mode' || suffix === 'mode' || suffix === 'program') {
+      candidates.push(`${prefix}_wash_mode`, `${prefix}_mode`, `${prefix}_program`, `select.${prefix}_wash_mode`, `select.${prefix}_mode`, `select.${prefix}_program`);
     }
     if (suffix === 'door_status') {
       candidates.push(`${prefix}_door_status`, `${prefix}_door`, `binary_sensor.${prefix}_door_status`, `binary_sensor.${prefix}_door`);
@@ -636,7 +636,7 @@ class MideaWasherCard extends LitElement {
     // 全局搜索时用的后缀模式
     if (suffix === 'power') return ['power'];
     if (suffix === 'start_pause') return ['start_pause', 'start'];
-    if (suffix === 'wash_mode' || suffix === 'mode') return ['wash_mode', 'mode'];
+    if (suffix === 'wash_mode' || suffix === 'mode' || suffix === 'program') return ['wash_mode', 'mode', 'program'];
     if (suffix === 'door_status') return ['door_status', 'door'];
     if (suffix === 'bucket_water_overheating' || suffix === 'water_overheating') return ['bucket_water_overheating', 'water_overheating'];
     return [suffix];
@@ -651,7 +651,7 @@ class MideaWasherCard extends LitElement {
   }
 
   get _modeEntity() {
-    return this._findEntity('wash_mode') || this._findEntity('mode');
+    return this._findEntity('wash_mode') || this._findEntity('mode') || this._findEntity('program');
   }
 
   get _doorEntity() {
