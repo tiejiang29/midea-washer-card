@@ -720,8 +720,6 @@ class MideaWasherCard extends LitElement {
 
   _selectMode(mode) {
     if (!this._modeEntity) return;
-    this._callService('select', 'select_option', this._modeEntity);
-    // select_option 需要 option 参数
     this.hass.callService('select', 'select_option', {
       entity_id: this._modeEntity,
       option: mode,
